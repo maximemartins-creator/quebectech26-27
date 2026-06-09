@@ -1,0 +1,129 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Plan média always-on — budget par campagne</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--royal:#2c2ce6;--navy:#14156e;--ink:#1f2150;--peri-d:#4a4fd6;--line:#e5e7f3;--greenbg:#d6eedd;--colhi:#eef0ff;--rowhi:#e9ecff;}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--ink);background:#fff;padding:40px 28px;}
+.wrap{max-width:1180px;margin:0 auto;}
+.kicker{color:var(--peri-d);font-family:Poppins,Inter,sans-serif;font-weight:600;font-size:13px;letter-spacing:.08em;text-transform:uppercase;margin:0 0 6px;}
+h1{font-family:Poppins,Inter,sans-serif;font-weight:600;font-size:28px;color:var(--navy);margin:0 0 18px;letter-spacing:-.01em;}
+.controls{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:0 0 18px;}
+.controls label{font-family:Poppins,Inter,sans-serif;font-weight:600;font-size:14px;color:var(--navy);}
+select{font-family:Inter,sans-serif;font-size:14px;color:var(--navy);padding:9px 38px 9px 14px;border:1.5px solid #cdd1ec;border-radius:10px;background:#fff url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'><path d='M2 4l4 4 4-4' fill='none' stroke='%234a4fd6' stroke-width='1.6' stroke-linecap='round'/></svg>") no-repeat right 13px center;-webkit-appearance:none;appearance:none;cursor:pointer;font-weight:500;}
+select:focus{outline:2px solid var(--royal);outline-offset:1px;border-color:var(--royal);}
+.shown{font-size:14px;color:#45487a;}
+.shown b{color:var(--royal);font-family:Poppins,Inter,sans-serif;}
+.tablewrap{border:1px solid var(--line);border-radius:16px;overflow-x:auto;}
+table.budget{border-collapse:collapse;width:100%;font-size:13px;min-width:1040px;}
+table.budget thead th{background:var(--navy);color:#fff;font-family:Poppins,Inter,sans-serif;font-weight:500;padding:13px 8px;font-size:12.5px;text-align:center;white-space:nowrap;transition:background .12s;}
+table.budget thead th.colhi{background:#262799;}
+table.budget td,table.budget th.camp{padding:11px 8px;text-align:center;border-bottom:1px solid #eef0f8;}
+tbody tr.group-alt td,tbody tr.group-alt th{background:#f7f8fd;}
+th.camp{font-family:Poppins,Inter,sans-serif;font-weight:600;color:var(--navy);font-size:14px;border-right:1px solid var(--line);background:#fff;}
+td.plat{text-align:left;padding-left:16px;color:#4a4e82;border-right:1px solid #eef0f8;}
+td.num{color:#26284f;font-weight:500;cursor:default;}
+td.num.dash{color:#bcc0da;font-weight:400;}
+td.num.green{background:var(--greenbg);color:#1d6b41;font-weight:600;}
+td.sub{font-weight:600;color:var(--navy);border-left:1px solid var(--line);}
+td.camptot{font-family:Poppins,Inter,sans-serif;font-weight:600;color:var(--navy);background:#eef0fa;border-left:1px solid var(--line);font-size:14px;}
+tbody td.colhi{background:var(--colhi)!important;}
+tbody td.green.colhi{background:#cbe9d4!important;}
+tbody tr.rowhi td,tbody tr.rowhi th.camp{background:var(--rowhi)!important;}
+tbody tr.rowhi td.green{background:#c2e6cd!important;}
+tr.totals td{border-top:2px solid var(--royal);background:#eef0fa;font-weight:600;color:var(--navy);font-family:Poppins,Inter,sans-serif;}
+tr.totals td.grand{background:var(--royal);color:#fff;font-size:15px;}
+.legend{display:flex;gap:22px;flex-wrap:wrap;margin-top:16px;font-size:13.5px;color:#45487a;}
+.legend i{display:inline-block;width:14px;height:14px;border-radius:4px;vertical-align:-2px;margin-right:7px;}
+#tip{position:fixed;pointer-events:none;z-index:50;background:var(--navy);color:#fff;padding:9px 13px;border-radius:10px;font-size:12.5px;line-height:1.5;box-shadow:0 8px 22px rgba(20,21,110,.28);opacity:0;transition:opacity .1s;max-width:240px;}
+#tip b{font-family:Poppins,Inter,sans-serif;font-weight:600;}
+#tip .t-amt{color:#a9b2ff;font-weight:600;}
+@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact;}.controls{display:none;}}
+</style></head>
+<body><div class="wrap">
+<p class="kicker">Répartition budgétaire · 2026–2027</p>
+<h1>Plan média always-on par campagne</h1>
+<div class="controls">
+<label for="camp">Isoler une campagne :</label>
+<select id="camp"><option value="__all">Toutes les campagnes</option></select>
+<span class="shown">Total affiché : <b id="shown">32,525$</b></span>
+</div>
+<div class="tablewrap"><table class="budget" id="tbl"><thead></thead><tbody></tbody></table></div>
+<div class="legend">
+<span><i style="background:#d6eedd"></i>Vert : budget déjà engagé / dépensé</span>
+<span><i style="background:#2c2ce6"></i>Bleu : grand total annuel</span>
+<span><i style="background:#f7f8fd;border:1px solid #e5e7f3"></i>Bandes : regroupement par campagne</span>
+</div>
+</div>
+<div id="tip"></div>
+<script>
+const DATA={"months": ["Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre", "Janvier", "Février", "Mars"], "groups": [{"name": "Mouvement", "rows": [{"plat": "Meta", "vals": ["-", "-", "-", "-", "-", "200$", "200$", "200$", "-", "200$", "200$", "200$"], "green": []}, {"plat": "LinkedIn", "vals": ["-", "-", "-", "-", "-", "300$", "300$", "300$", "-", "300$", "300$", "300$"], "green": []}]}, {"name": "Nouvelles", "rows": [{"plat": "Meta", "vals": ["-", "-", "-", "300$", "300$", "300$", "-", "300$", "300$", "300$", "300$", "300$"], "green": []}, {"plat": "LinkedIn", "vals": ["300$", "250$", "300$", "300$", "300$", "300$", "-", "300$", "300$", "300$", "300$", "300$"], "green": [0, 1]}]}, {"name": "Stade V", "rows": [{"plat": "Meta", "vals": ["600$", "-", "-", "-", "-", "-", "2,000$", "-", "-", "550$", "-", "-"], "green": [0]}, {"plat": "LinkedIn", "vals": ["1,650$", "-", "-", "-", "-", "-", "1,500$", "-", "-", "-", "-", "-"], "green": [0]}, {"plat": "YouTube", "vals": ["300$", "-", "-", "-", "-", "-", "500$", "-", "-", "-", "-", "-"], "green": [0]}]}, {"name": "FAQ", "rows": [{"plat": "Meta", "vals": ["-", "-", "-", "-", "300$", "300$", "300$", "300$", "-", "300$", "300$", "300$"], "green": []}, {"plat": "LinkedIn", "vals": ["-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-"], "green": []}]}, {"name": "Radar", "rows": [{"plat": "Meta", "vals": ["-", "-", "-", "-", "500$", "500$", "-", "500$", "500$", "500$", "500$", "500$"], "green": []}, {"plat": "LinkedIn", "vals": ["-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-"], "green": []}]}, {"name": "Infolettre", "rows": [{"plat": "Meta", "vals": ["500$", "500$", "400$", "300$", "300$", "300$", "-", "300$", "300$", "300$", "300$", "300$"], "green": [0, 1]}, {"plat": "LinkedIn", "vals": ["-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-"], "green": []}]}, {"name": "Ressources", "rows": [{"plat": "Meta", "vals": ["-", "-", "-", "-", "-", "-", "1,500$", "625$", "625$", "625$", "625$", "625$"], "green": []}, {"plat": "LinkedIn", "vals": ["-", "-", "-", "-", "-", "-", "1,000$", "350$", "350$", "350$", "350$", "350$"], "green": []}]}, {"name": "GOOGLE", "rows": [{"plat": "", "vals": ["0$", "0$", "0$", "0$", "0$", "0$", "0$", "0$", "0$", "0$", "0$", "0$"], "green": []}]}]};
+const M=DATA.months;
+const amt=v=>(!v||v==="-")?0:Number(v.replace(/[^0-9.]/g,""))||0;
+const fmt=n=>n.toLocaleString("en-US")+"$";
+const sel=document.getElementById("camp");
+DATA.groups.forEach(g=>{const o=document.createElement("option");o.value=g.name;o.textContent=g.name;sel.appendChild(o);});
+const thead=document.querySelector("#tbl thead"), tbody=document.querySelector("#tbl tbody"), tip=document.getElementById("tip");
+
+function buildHead(){
+  let h='<tr><th>Campagne</th><th>Plateforme</th>';
+  M.forEach((m,i)=>h+=`<th data-col="${i}">${m}</th>`);
+  h+='<th>Sous-total</th><th>Total</th></tr>';
+  thead.innerHTML=h;
+}
+function render(filter){
+  const groups=DATA.groups.filter(g=>filter==="__all"||g.name===filter);
+  let html="", gi=0, monthTot=Array(12).fill(0), grand=0;
+  groups.forEach(g=>{
+    const alt=(gi%2===1 && filter==="__all")?" group-alt":""; gi++;
+    const n=g.rows.length;
+    let gtot=0; g.rows.forEach(r=>r.vals.forEach((v,i)=>{gtot+=amt(v);}));
+    g.rows.forEach((r,ri)=>{
+      let sub=0; r.vals.forEach((v,i)=>{const a=amt(v);sub+=a;monthTot[i]+=a;});
+      grand+=sub;
+      html+=`<tr class="${alt.trim()}">`;
+      if(ri===0){
+        if(g.name==="GOOGLE"){html+=`<th class="camp" colspan="2" rowspan="${n}">${g.name}</th>`;}
+        else{html+=`<th class="camp" rowspan="${n}">${g.name}</th><td class="plat">${r.plat}</td>`;}
+      } else {html+=`<td class="plat">${r.plat}</td>`;}
+      r.vals.forEach((v,i)=>{
+        const isDash=(v==="-");
+        const cls="num"+(isDash?" dash":"")+(r.green.includes(i)?" green":"");
+        html+=`<td class="${cls}" data-col="${i}" data-camp="${g.name}" data-plat="${r.plat||'—'}" data-m="${i}" data-v="${isDash?'':v}">${isDash?'–':v}</td>`;
+      });
+      html+=`<td class="sub">${fmt(sub)}</td>`;
+      if(ri===0){html+=`<td class="camptot" rowspan="${n}">${fmt(gtot)}</td>`;}
+      html+="</tr>";
+    });
+  });
+  let tr='<tr class="totals"><td colspan="2">Total mensuel</td>';
+  monthTot.forEach((v,i)=>tr+=`<td class="num" data-col="${i}">${fmt(v)}</td>`);
+  tr+=`<td class="num">${fmt(grand)}</td><td class="grand">${fmt(grand)}</td></tr>`;
+  tbody.innerHTML=html+tr;
+  document.getElementById("shown").textContent=fmt(grand);
+}
+function clearHi(){document.querySelectorAll(".colhi").forEach(e=>e.classList.remove("colhi"));document.querySelectorAll("tr.rowhi").forEach(e=>e.classList.remove("rowhi"));}
+tbody.addEventListener("mouseover",e=>{
+  const td=e.target.closest("td[data-col]"); 
+  clearHi();
+  if(!td)return;
+  const col=td.dataset.col;
+  document.querySelectorAll(`[data-col="${col}"]`).forEach(c=>c.classList.add("colhi"));
+  const tr=td.closest("tr"); if(tr) tr.classList.add("rowhi");
+  if(td.dataset.camp!==undefined){
+    const v=td.dataset.v;
+    tip.innerHTML=`<b>${td.dataset.camp}</b> · ${td.dataset.plat}<br>${M[td.dataset.m]} — `+(v?`<span class="t-amt">${v}</span>`:`<span class="t-amt">aucune diffusion</span>`);
+    tip.style.opacity="1";
+  }
+});
+tbody.addEventListener("mousemove",e=>{
+  let x=e.clientX+14,y=e.clientY+16;
+  if(x+250>window.innerWidth)x=e.clientX-tip.offsetWidth-14;
+  tip.style.left=x+"px";tip.style.top=y+"px";
+});
+tbody.addEventListener("mouseleave",()=>{clearHi();tip.style.opacity="0";});
+sel.addEventListener("change",()=>render(sel.value));
+buildHead();render("__all");
+</script>
+</body></html>
